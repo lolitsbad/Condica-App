@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background-color: #FAF9F5;
+}
+
+@keyframes condicaFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes condicaPulseGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.95; }
+}
+.condica-fade { animation: condicaFadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.condica-btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.condica-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(27,43,75,0.16); }
+.condica-btn:active { transform: translateY(0); }
+.condica-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.condica-card:hover { box-shadow: 0 8px 22px rgba(27,43,75,0.08); transform: translateY(-2px); }
+.condica-pulse-line { animation: condicaPulseGlow 3s ease-in-out infinite; }
+
+@media print {
+  body * { visibility: hidden; }
+  .condica-print-area, .condica-print-area * { visibility: visible; }
+  .condica-print-area { position: absolute; top: 0; left: 0; width: 100%; padding: 24px; }
+}
