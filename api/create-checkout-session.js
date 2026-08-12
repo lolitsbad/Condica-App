@@ -1,7 +1,7 @@
 // Vercel Serverless Function.
-// Creează o sesiune Stripe Checkout care combină LICENȚA (plată unică) cu
-// MENTENANȚA (abonament lunar) — ambele plătite la același checkout, licența
-// taxată o singură dată, mentenanța pornind ca abonament de atunci încolo.
+// Creează o sesiune Stripe Checkout care combină LICENȚA (plată unică, aceeași
+// sumă indiferent de plan) cu MENTENANȚA aleasă (Standard sau Premium, abonament
+// lunar) — plătite ambele la același checkout.
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -15,13 +15,15 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { plan } = req.body || {};
-  const licenseKey = plan === 'cabinet' ? 'STRIPE_PRICE_CABINET_LICENSE' : 'STRIPE_PRICE_SOLO_LICENSE';
-  const maintenanceKey = plan === 'cabinet' ? 'STRIPE_PRICE_CABINET_MAINTENANCE' : 'STRIPE_PRICE_SOLO_MAINTENANCE';
-  const licensePriceId = process.env[licenseKey];
-  const maintenancePriceId = process.env[maintenanceKey];
+  const { plan, maintenance } = req.body || {};
+  const licensePriceId = process.env.STRIPE_PRICE_LICENSE;
+  let maintenancePriceId;
+  if (maintenance === 'premium') maintenancePriceId = process.env.STRIPE_PRICE_MAINTENANCE_PREMIUM;
+  else if (maintenance === 'plus') maintenancePriceId = process.env.STRIPE_PRICE_MAINTENANCE_PLUS;
+  else maintenancePriceId = process.env.STRIPE_PRICE_MAINTENANCE_STANDARD;
+
   if (!licensePriceId || !maintenancePriceId) {
-    res.status(400).json({ error: `Nu există prețuri Stripe configurate pentru planul "${plan}".` });
+    res.status(400).json({ error: 'Prețurile Stripe nu sunt configurate complet pe server.' });
     return;
   }
 
@@ -33,14 +35,15 @@ export default async function handler(req, res) {
     // linia 0: licența — preț unic, taxată o singură dată pe prima factură
     params.append('line_items[0][price]', licensePriceId);
     params.append('line_items[0][quantity]', '1');
-    // linia 1: mentenanța — preț recurent, devine abonamentul lunar continuu
+    // linia 1: mentenanța aleasă — preț recurent, devine abonamentul lunar continuu
     params.append('line_items[1][price]', maintenancePriceId);
     params.append('line_items[1][quantity]', '1');
     params.append('success_url', `${origin}/inregistrare?session_id={CHECKOUT_SESSION_ID}`);
     params.append('cancel_url', `${origin}/preturi`);
     params.append('metadata[plan]', plan || 'solo');
-    params.append('metadata[billing]', 'license_plus_maintenance');
+    params.append('metadata[maintenance]', maintenance || 'standard');
     params.append('subscription_data[metadata][plan]', plan || 'solo');
+    params.append('subscription_data[metadata][maintenance]', maintenance || 'standard');
     params.append('allow_promotion_codes', 'true');
 
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
@@ -61,4 +64,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: String(err) });
   }
 }
-
