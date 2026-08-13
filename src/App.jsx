@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import Login from './pages/Login';
+import LandingPage from './pages/LandingPage';
 import PricingPage from './pages/PricingPage';
 import CompleteSignup from './pages/CompleteSignup';
 import BookingPage from './pages/BookingPage';
@@ -18,7 +19,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/preturi" replace />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/preturi" element={<PricingPage />} />
           <Route path="/inregistrare" element={<CompleteSignup />} />
           <Route path="/programare/:slug" element={<BookingPage />} />
