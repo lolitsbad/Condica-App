@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage';
 import PricingPage from './pages/PricingPage';
 import CompleteSignup from './pages/CompleteSignup';
 import BookingPage from './pages/BookingPage';
+import GhidPage from './pages/GhidPage';
 import CabinetLayout from './pages/cabinet/CabinetLayout';
 import Dashboard from './pages/cabinet/Dashboard';
 import Appointments from './pages/cabinet/Appointments';
@@ -21,6 +22,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/preturi" element={<PricingPage />} />
+          <Route path="/ghid" element={<GhidPage />} />
           <Route path="/inregistrare" element={<CompleteSignup />} />
           <Route path="/programare/:slug" element={<BookingPage />} />
           <Route path="/login" element={<Login />} />
