@@ -270,12 +270,12 @@ export default function LandingPage() {
             <a href="/preturi" className="px-5 py-3 rounded-lg text-sm font-medium text-white flex items-center gap-2 condica-btn" style={{ backgroundColor: C.ink }}>
               Vezi planurile <ArrowRight size={15} />
             </a>
-            <span className="text-sm" style={{ color: C.textSoft }}>900 RON, o dată</span>
+            <span className="text-sm" style={{ color: C.textSoft }}>de la 250 RON/lună</span>
           </div>
           <div className="flex items-center gap-8">
             <div><div className="text-2xl font-semibold"><CountUp to={100} suffix="+" /></div><div className="text-xs" style={{ color: C.textSoft }}>acțiuni AI/lună</div></div>
             <div><div className="text-2xl font-semibold"><CountUp to={0} /></div><div className="text-xs" style={{ color: C.textSoft }}>apeluri de confirmare</div></div>
-            <div><div className="text-2xl font-semibold"><CountUp to={900} /></div><div className="text-xs" style={{ color: C.textSoft }}>RON, o dată</div></div>
+            <div><div className="text-2xl font-semibold"><CountUp to={250} /></div><div className="text-xs" style={{ color: C.textSoft }}>RON/lună, de la</div></div>
           </div>
         </div>
         <HeroComposition />
@@ -341,8 +341,8 @@ export default function LandingPage() {
         <Reveal>
           <TiltCard maxTilt={4} className="rounded-3xl p-8 md:p-10 text-center" style={{ backgroundColor: C.ink }}>
             <p className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>Preț</p>
-            <p className="text-4xl font-semibold mb-2" style={{ color: '#fff', fontFamily: "'Fraunces', serif" }}>900 RON, o dată</p>
-            <p className="text-sm mb-7" style={{ color: 'rgba(255,255,255,0.7)' }}>Nu abonament pe viață — doar mentenanța, de la 100 RON/lună.</p>
+            <p className="text-4xl font-semibold mb-2" style={{ color: '#fff', fontFamily: "'Fraunces', serif" }}>De la 250 RON/lună</p>
+            <p className="text-sm mb-7" style={{ color: 'rgba(255,255,255,0.7)' }}>Fără costuri ascunse. Anulezi oricând.</p>
             <a href="/preturi" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium condica-btn" style={{ backgroundColor: '#fff', color: C.ink }}>
               Vezi planurile <ArrowRight size={15} />
             </a>
