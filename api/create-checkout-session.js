@@ -1,7 +1,6 @@
 // Vercel Serverless Function.
-// Creează o sesiune Stripe Checkout care combină LICENȚA (plată unică, aceeași
-// sumă indiferent de plan) cu MENTENANȚA aleasă (Standard sau Premium, abonament
-// lunar) — plătite ambele la același checkout.
+// Creează o sesiune Stripe Checkout pentru un abonament lunar simplu,
+// în funcție de planul ales (Solo sau Cabinet).
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -15,15 +14,10 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { plan, maintenance } = req.body || {};
-  const licensePriceId = process.env.STRIPE_PRICE_LICENSE;
-  let maintenancePriceId;
-  if (maintenance === 'premium') maintenancePriceId = process.env.STRIPE_PRICE_MAINTENANCE_PREMIUM;
-  else if (maintenance === 'plus') maintenancePriceId = process.env.STRIPE_PRICE_MAINTENANCE_PLUS;
-  else maintenancePriceId = process.env.STRIPE_PRICE_MAINTENANCE_STANDARD;
-
-  if (!licensePriceId || !maintenancePriceId) {
-    res.status(400).json({ error: 'Prețurile Stripe nu sunt configurate complet pe server.' });
+  const { plan } = req.body || {};
+  const priceId = plan === 'cabinet' ? process.env.STRIPE_PRICE_CABINET : process.env.STRIPE_PRICE_SOLO;
+  if (!priceId) {
+    res.status(400).json({ error: `Nu există un preț Stripe configurat pentru planul "${plan}".` });
     return;
   }
 
@@ -32,18 +26,12 @@ export default async function handler(req, res) {
   try {
     const params = new URLSearchParams();
     params.append('mode', 'subscription');
-    // linia 0: licența — preț unic, taxată o singură dată pe prima factură
-    params.append('line_items[0][price]', licensePriceId);
+    params.append('line_items[0][price]', priceId);
     params.append('line_items[0][quantity]', '1');
-    // linia 1: mentenanța aleasă — preț recurent, devine abonamentul lunar continuu
-    params.append('line_items[1][price]', maintenancePriceId);
-    params.append('line_items[1][quantity]', '1');
     params.append('success_url', `${origin}/inregistrare?session_id={CHECKOUT_SESSION_ID}`);
     params.append('cancel_url', `${origin}/preturi`);
     params.append('metadata[plan]', plan || 'solo');
-    params.append('metadata[maintenance]', maintenance || 'standard');
     params.append('subscription_data[metadata][plan]', plan || 'solo');
-    params.append('subscription_data[metadata][maintenance]', maintenance || 'standard');
     params.append('allow_promotion_codes', 'true');
 
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
