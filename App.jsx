@@ -1,0 +1,42 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './AuthContext';
+import Login from './pages/Login';
+import LandingPage from './pages/LandingPage';
+import PricingPage from './pages/PricingPage';
+import CompleteSignup from './pages/CompleteSignup';
+import BookingPage from './pages/BookingPage';
+import GhidPage from './pages/GhidPage';
+import CabinetLayout from './pages/cabinet/CabinetLayout';
+import Dashboard from './pages/cabinet/Dashboard';
+import Appointments from './pages/cabinet/Appointments';
+import Patients from './pages/cabinet/Patients';
+import Billing from './pages/cabinet/Billing';
+import Schedule from './pages/cabinet/Schedule';
+import Assistant from './pages/cabinet/Assistant';
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/preturi" element={<PricingPage />} />
+          <Route path="/ghid" element={<GhidPage />} />
+          <Route path="/inregistrare" element={<CompleteSignup />} />
+          <Route path="/programare/:slug" element={<BookingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cabinet" element={<CabinetLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="programari" element={<Appointments />} />
+            <Route path="pacienti" element={<Patients />} />
+            <Route path="facturare" element={<Billing />} />
+            <Route path="program" element={<Schedule />} />
+            <Route path="asistent" element={<Assistant />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/preturi" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
